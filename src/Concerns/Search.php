@@ -31,8 +31,10 @@ trait Search
         if (!empty($parameters)) {
             $setters = $request->setters();
             foreach ($parameters as $key => $value) {
-                $setter = $setters[$key];
-                $request->$setter($value);
+                if (isset($setters[$key])) {
+                    $setter = $setters[$key];
+                    $request->$setter($value);
+                }
             }
         }
 
