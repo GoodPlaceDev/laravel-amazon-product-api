@@ -13,7 +13,7 @@ trait Search
     /**
      * {@inheritdoc}
      */
-    public function search(string $category, string $keyword = null, int $page = 1)
+    public function search(string $category, string $keyword = null, int $page = 1, array $parameters = null)
     {
         /**
          * @var SearchItemsResource[] $resources
@@ -27,6 +27,14 @@ trait Search
         $request->setPartnerTag(Config::get('amazon-product.associate_tag'));
         $request->setPartnerType(PartnerType::ASSOCIATES);
         $request->setResources($resources);
+
+        if (!empty($parameters)) {
+            $setters = $request->setters();
+            foreach ($parameters as $key => $value) {
+                $setter = $setters[$key];
+                $request->$setter($value);
+            }
+        }
 
         $request = $this->callHook('search', $request);
 
